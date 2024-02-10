@@ -376,26 +376,44 @@ app.get("/friends",authenticateJwt,async(req,res)=>{
     }
 })
 
-app.post("/addfriends",authenticateJwt,async(req,res)=>{
-    const user=req.user
-    const payload = req.body
-    const {data,success}=friendsSchema.safeParse(payload)
+app.post("/addfriends", authenticateJwt, async (req, res) => {
+    const user = req.user;
+    const payload = req.body;
+    const { data, success } = friendsSchema.safeParse(payload);
 
-    if(!success)
-    {
-        //return
+    if (!success) {
+        return res.status(400).json({ message: "Invalid input", errors: friendsSchema.error });
     }
-    if(!user)
-    {
-        //return
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
     }
+
     try {
-        
-    } catch (error) {
-        //return
-    }
+        const foundUser = await User.findOne({ email: user.email });
+        const friend = await User.findOne({ email: data.email });
 
-})
+        if (!friend) {
+            return res.status(404).json({ message: "Friend not found" });
+        }
+
+        if (foundUser.friends.includes(friend._id)) {
+            return res.status(400).json({ message: "Friend already added" });
+        }
+        
+        if (user.email === friend.email) {
+            return res.status(400).json({ message: "Cannot add self as friend" });
+        }
+
+        foundUser.friends.push(friend._id);
+        await foundUser.save();
+
+        return res.status(200).json({ message: "Friend added successfully" });
+    } catch (error) {
+        console.error("Error adding friend:", error);
+        return res.status(500).json({ message: "Error adding friend" });
+    }
+});
 
 
 

@@ -17,24 +17,18 @@ const userSchema = new mongoose.Schema({
     balance :{
         type : Number 
     },
-    transactions : [
-        {
+    transactions : [{
             type : mongoose.Schema.Types.ObjectId,
             ref : "Transactions"
-        }
-    ],
-    requests : [
-        {
+        }],
+    requests : [{
             type : mongoose.Schema.Types.ObjectId,
             ref : 'Transactions'
-        }
-    ],
-    friends : [
-        {
+        }],
+    friends : [{
             type : mongoose.Schema.Types.ObjectId,
             ref : 'User'
-        }
-    ]
+        }]
 })
 
 const transactionsSchema= new mongoose.Schema({
