@@ -31,6 +31,10 @@ const friendsSchema=zod.object({
     email:zod.string().email()
 })
 
+const reqMoneySchema=zod.object({
+    id:zod.string()
+})
+
 export {
     userSchemaLogin,
     transactionsSchema,
@@ -38,5 +42,6 @@ export {
     giveMoneySchema,
     creditDebitSchema,
     updatePassword,
-    friendsSchema
+    friendsSchema,
+    reqMoneySchema
 };

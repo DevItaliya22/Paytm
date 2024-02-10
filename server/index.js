@@ -9,9 +9,10 @@ import {
     giveMoneySchema,
     creditDebitSchema,
     updatePassword,
-    friendsSchema
+    friendsSchema,
+    reqMoneySchema
 } from './types/types.js';
-import { Transactions, User } from './db/index.js';
+import { Transactions, User,Request } from './db/index.js';
 
 
 const app = express();
@@ -415,10 +416,165 @@ app.post("/addfriends", authenticateJwt, async (req, res) => {
     }
 });
 
+app.get("/sentrequest", authenticateJwt, async (req, res) => {
+    const user = req.user;
+
+    try {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const foundUser = await User.findOne({ email: user.email });
+
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (foundUser.requestSent.length > 0) {
+            return res.status(200).json({ requestSent: foundUser.requestSent });
+        } else {
+            return res.status(401).json({ message: "No request sent" });
+        }
+    } catch (error) {
+        console.error("Error fetching sent requests:", error);
+        return res.status(500).json({ message: "Error fetching sent requests" });
+    }
+});
+
+app.get("/requestReceived", authenticateJwt, async (req, res) => {
+    const user = req.user;
+
+    try {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const foundUser = await User.findOne({ email: user.email });
+
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (foundUser.requestReceived.length > 0) {
+            return res.status(200).json({ requestReceived: foundUser.requestReceived });
+        } else {
+            return res.status(401).json({ message: "No requests received" });
+        }
+    } catch (error) {
+        console.error("Error fetching received requests:", error);
+        return res.status(500).json({ message: "Error fetching received requests" });
+    }
+});
+
+app.post("/sendRequest", authenticateJwt, async (req, res) => {
+    const user = req.user;
+    const payload = req.body;
+    const { success, data } = giveMoneySchema.safeParse(payload);
+
+    if (!success) {
+        return res.status(400).json({ message: "Invalid input from user", errors: giveMoneySchema.error });
+    }
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    try {
+        const reqSender = await User.findOne({ email: user.email }); 
+        const reqReceiver = await User.findOne({ email: data.email }); 
+
+        if (!reqReceiver) {
+            return res.status(404).json({ message: "Receiver does not exist" });
+        }
+        if(reqSender.email===reqReceiver.email)
+        {
+            return res.status(200).json({message:"Cannot send request to same user"})
+        }
+        const obj = {
+            from: reqSender._id,
+            to: reqReceiver._id,
+            active: true,
+            sentByMe: true,
+            amount: data.amount
+        };
+
+        const request = await Request.create(obj);
+        const id = request._id;
+
+        reqSender.requestSent.push(id);
+        reqReceiver.requestReceived.push(id);
+
+        await reqSender.save();
+        await reqReceiver.save();
+        await request.save();
+
+        return res.status(200).json({ message: "Request sent successfully" });
+    } catch (error) {
+        console.error("Error sending request:", error);
+        return res.status(500).json({ message: "Error sending request" });
+    }
+});
+app.post("/fulfillRequest", authenticateJwt, async (req, res) => {
+    const user = req.user;
+    const payload = req.body;
+    const { success, data } = reqMoneySchema.safeParse(payload);
+
+    if (!success) {
+        return res.status(400).json({ message: "Invalid input from user" });
+    }
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    try {
+        const request = await Request.findById(data.id);
+
+        if (!request) {
+            return res.status(404).json({ message: "Request not found" });
+        }
+
+        const from = await User.findById(request.from);
+        const to = await User.findById(request.to);
+        const amount = request.amount;
+
+        if (!from || !to) {
+            return res.status(404).json({ message: "Sender or receiver not found" });
+        }
 
 
-// /request =>get all req and when u pay then /givemoney should work
+        if (to.balance < amount) {
+            return res.status(400).json({ message: "Insufficient balance" });
+        }
+        if(request.active===false)
+        {
+            return res.status(200).json({message:"Alrady full filled"});
+        }
 
+        const transaction = new Transactions({
+            from: from._id,
+            to: to._id,
+            received: amount,
+            amount: amount,
+        });
+
+        await transaction.save();
+
+        from.balance -= amount;
+        to.balance += amount;
+
+        await from.save();
+        await to.save();
+
+        request.active = false;
+        await request.save();
+
+        return res.status(200).json({ message: "Request fulfilled successfully" });
+    } catch (error) {
+        console.error("Error fulfilling request:", error);
+        return res.status(500).json({ message: "Error fulfilling request" });
+    }
+});
 
 
 app.listen(3000, () => {

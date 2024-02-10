@@ -21,14 +21,38 @@ const userSchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref : "Transactions"
         }],
-    requests : [{
+    requestSent : [{
             type : mongoose.Schema.Types.ObjectId,
-            ref : 'Transactions'
+            ref : 'Requests'
         }],
     friends : [{
             type : mongoose.Schema.Types.ObjectId,
             ref : 'User'
-        }]
+        }],
+    requestReceived : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'Requests'
+    }]
+})
+
+const requestSchema=new mongoose.Schema({
+    active :{
+        type:Boolean 
+    },
+    from :{
+        type:mongoose.Schema.Types.ObjectId
+    },
+    to:{
+        type:mongoose.Schema.Types.ObjectId
+    },
+    sentByMe : {
+        type : Boolean
+    },
+    amount : {
+        type : Number,
+        required : true
+    }
+
 })
 
 const transactionsSchema= new mongoose.Schema({
@@ -48,7 +72,8 @@ const transactionsSchema= new mongoose.Schema({
 
 const Transactions = mongoose.model('Transactions',transactionsSchema)
 const User = mongoose.model('User',userSchema);
+const Request = mongoose.model('Request',requestSchema)
 
 export {
-    User,Transactions
+    User,Transactions,Request
 }
