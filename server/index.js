@@ -2,8 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import { userSchemaSignUp,userSchemaLogin,transactionsSchema,giveMoneySchema } from './types/types.js';
+import { userSchemaSignUp,userSchemaLogin,transactionsSchema,updatePassword,giveMoneySchema,creditDebitSchema } from './types/types.js';
 import { Transactions, User } from './db/index.js';
+
 
 const app = express();
 
@@ -142,6 +143,7 @@ app.get("/balance", authenticateJwt, async (req, res) => {
         res.status(500).json({ message: "Error finding user" });
     }
 });
+
 app.post("/givemoney", authenticateJwt, async (req, res) => {
     const user = req.user;
     const payload = req.body;
@@ -202,16 +204,154 @@ app.post("/givemoney", authenticateJwt, async (req, res) => {
     }
 });
 
+app.post("/creditmoney",authenticateJwt, async (req, res) => {
+    const user = req.user;
+    const payload = req.body;
+    payload.amount = parseInt(payload.amount);
+    const parsedData = creditDebitSchema.safeParse(payload);
 
+    if (!parsedData.success) {
+        return res.status(400).json({ message: "Wrong format for input" });
+    }
 
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
 
+    try {
+        const foundUser = await User.findOne({ email: user.email });
 
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        foundUser.balance += parsedData.data.amount;
+
+        const obj={
+            from:foundUser._id,
+            to:foundUser._id,
+            received:parsedData.data.amount
+        }
+        const transaction=await Transactions.create(obj)
+        foundUser.transactions.push(transaction)
+        await foundUser.save();
+
+        return res.status(200).json({ message: "Amount credited successfully" });
+    } catch (error) {
+        console.error("Error crediting amount:", error);
+        return res.status(500).json({ message: "Error crediting amount" });
+    }
+});
+
+app.post("/debitmoney",authenticateJwt, async (req, res) => {
+    const user = req.user;
+    const payload = req.body;
+    payload.amount = parseInt(payload.amount);
+    const parsedData = creditDebitSchema.safeParse(payload);
+
+    if (!parsedData.success) {
+        return res.status(400).json({ message: "Wrong format for input" });
+    }
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    try {
+        const foundUser = await User.findOne({ email: user.email });
+
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if(foundUser.balance<parsedData.data.amount)
+        {
+            return res.status(404).json({message:"Not sufficient money"})
+        }
+        foundUser.balance -= parsedData.data.amount;
+       
+
+        const obj={
+            from:foundUser._id,
+            to:foundUser._id,
+            received:parsedData.data.amount
+        }
+        const transaction=await Transactions.create(obj)
+        foundUser.transactions.push(transaction)
+        await foundUser.save();
+        
+
+        return res.status(200).json({ message: "Amount debited successfully" });
+    } catch (error) {
+        console.error("Error crediting amount:", error);
+        return res.status(500).json({ message: "Error debiting amount" });
+    }
+});
+
+app.post("/updatePassword", authenticateJwt, async (req, res) => {
+    const user = req.user;
+    const payload = req.body;
+    const parsedData = updatePassword.safeParse(payload);
+
+    try {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!parsedData.success) {
+            return res.status(400).json({ message: "Invalid input", errors: parsedData.error });
+        }
+
+        const foundUser = await User.findOne({ email: user.email });
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const { old_password, new_password1, new_password2 } = parsedData.data;
+
+        if (old_password !== foundUser.password) {
+            return res.status(400).json({ message: "Incorrect old password" });
+        }
+
+        if (new_password1 !== new_password2) {
+            return res.status(400).json({ message: "New passwords do not match" });
+        }
+
+        foundUser.password = new_password1;
+        await foundUser.save();
+
+        return res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error("Error updating password:", error);
+        return res.status(500).json({ message: "Error updating password" });
+    }
+});
+
+app.get("/showpassword", authenticateJwt, async (req, res) => {
+    const user = req.user;
+
+    try {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const foundUser = await User.findOne({ email: user.email });
+
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({ password:foundUser.password });
+    } catch (error) {
+        console.error("Error fetching user details:", error);
+        return res.status(500).json({ message: "Error fetching user details" });
+    }
+});
 
 
 
 // /request =>get all req and when u pay then /givemoney should work
 
-// /givemoney
 
 
 
