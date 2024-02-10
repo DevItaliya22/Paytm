@@ -26,6 +26,9 @@ const updatePassword=zod.object({
     new_password1:zod.string().min(8),
     new_password2:zod.string().min(8)
 })
+const friendsSchema=zod.object({
+    email:zod.string().email()
+})
 
 export {
     userSchemaLogin,
@@ -33,5 +36,6 @@ export {
     userSchemaSignUp,
     giveMoneySchema,
     creditDebitSchema,
-    updatePassword
+    updatePassword,
+    friendsSchema
 };

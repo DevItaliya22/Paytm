@@ -2,7 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import { userSchemaSignUp,userSchemaLogin,transactionsSchema,updatePassword,giveMoneySchema,creditDebitSchema } from './types/types.js';
+import {
+    userSchemaLogin,
+    transactionsSchema,
+    userSchemaSignUp,
+    giveMoneySchema,
+    creditDebitSchema,
+    updatePassword,
+    friendsSchema
+} from './types/types.js';
 import { Transactions, User } from './db/index.js';
 
 
@@ -348,11 +356,50 @@ app.get("/showpassword", authenticateJwt, async (req, res) => {
     }
 });
 
+app.get("/friends",authenticateJwt,async(req,res)=>{
+    const user=req.user;
+    try {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const foundUser = await User.findOne({ email: user.email });
+
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({ friends:foundUser.friends });
+    } catch (error) {
+        console.error("Error fetching user details:", error);
+        return res.status(500).json({ message: "Error fetching user details" });
+    }
+})
+
+app.post("/addfriends",authenticateJwt,async(req,res)=>{
+    const user=req.user
+    const payload = req.body
+    const {data,success}=friendsSchema.safeParse(payload)
+
+    if(!success)
+    {
+        //return
+    }
+    if(!user)
+    {
+        //return
+    }
+    try {
+        
+    } catch (error) {
+        //return
+    }
+
+})
+
 
 
 // /request =>get all req and when u pay then /givemoney should work
-
-
 
 
 
