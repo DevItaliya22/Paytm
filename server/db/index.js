@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref : "Transactions"
         }
+    ],
+    requests : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'Transactions'
+        }
     ]
 })
 
@@ -32,7 +38,7 @@ const transactionsSchema= new mongoose.Schema({
     to : {
         type:mongoose.Schema.Types.ObjectId
     },
-    recieved :
+    received :
     {
         type : Number,
         required : true
