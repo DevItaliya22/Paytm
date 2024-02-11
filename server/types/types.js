@@ -2,12 +2,13 @@ import zod from 'zod'
 
 const userSchemaSignUp = zod.object({
     email: zod.string().email(),
-    password: zod.string().min(8),
+    password: zod.string().min(4).max(56),
     number: zod.number().positive(),
+    username:zod.string().min(4)
 });
 const userSchemaLogin = zod.object({
     email: zod.string().email(),
-    password: zod.string().min(8),
+    password: zod.string().min(4).max(56),
 });
 
 const transactionsSchema = zod.object({
@@ -22,9 +23,9 @@ const creditDebitSchema=zod.object({
     amount:zod.number().positive()
 })
 const updatePassword=zod.object({
-    old_password:zod.string().min(8),
-    new_password1:zod.string().min(8),
-    new_password2:zod.string().min(8)
+    old_password:zod.string().min(4).max(56),
+    new_password1:zod.string().min(4).max(56),
+    new_password2:zod.string().min(4).max(56)
 })
 
 const friendsSchema=zod.object({

@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
         unique : true,
         required : true
     },
+    username:{
+        type:String,
+        required:true
+    },
     password :{
         type : String,
         required : true
@@ -45,8 +49,11 @@ const requestSchema=new mongoose.Schema({
     to:{
         type:mongoose.Schema.Types.ObjectId
     },
-    sentByMe : {
-        type : Boolean
+    from_name:{
+        type:String
+    },
+    to_name:{
+        type:String
     },
     amount : {
         type : Number,
@@ -66,6 +73,12 @@ const transactionsSchema= new mongoose.Schema({
     {
         type : Number,
         required : true
+    },
+    from_name:{
+        type:String
+    },
+    to_name:{
+        type:String
     }
 })
 

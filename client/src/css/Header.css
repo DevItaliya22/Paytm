@@ -1,0 +1,39 @@
+.header-container {
+    margin: 0;
+    padding: 0;
+    position: sticky;
+    top: 0
+    
+  }
+
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0B2447;
+    color: A5D7E8;
+    height:80px
+  }
+  
+  .header-button {
+    color: #A5D7E8;
+    width: 100px;
+    height: 40px;
+    background-color: #0B2447;
+    border-radius: 20px;
+    border: 0px black solid;
+    margin-right: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 400;
+    
+  }
+  
+  .header-button:hover {
+    background-color: #19376D; 
+  }
+  
+  h2{
+    color:#7393B3;
+    margin-left: 20px;
+  }

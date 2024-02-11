@@ -20,6 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const numericRegex = /^[0-9]+$/;
 const secret = "Secret-Hai-Kyu-Batau"; 
 
 mongoose.connect('mongodb://localhost:27017/paytm');
@@ -47,18 +48,25 @@ const authenticateJwt = (req, res, next) => {
 
 app.post("/signup", async (req, res) => {
     const payload = req.body;
-    payload.number= parseInt(payload.number)
-    
+ 
+    if(numericRegex.test(payload.number))
+    {
+        payload.number=parseInt(payload.number)
+    }
+    else{
+        return res.status(200).json({message: "Invalid input from user"})
+    }
     const parsedData = userSchemaSignUp.safeParse(payload);
 
     if (parsedData.success) {
-        const { email, password, number } = parsedData.data;
+        const { email, password, number,username } = parsedData.data;
+        console.log(parsedData);
 
         try {
             const alreadyExist = await User.findOne({ email });
             
             if (alreadyExist) {
-                return res.status(409).json({ message: "User already exists" });
+                return res.status(200).json({ message: "User already exists" });
             }
 
             const user = new User({
@@ -66,19 +74,20 @@ app.post("/signup", async (req, res) => {
                 password: password,
                 number: number,
                 balance: 10000,
+                username:username
             });
 
             await user.save();
             const token = jwt.sign({ email }, secret, { expiresIn: '1000h' });
             console.log("User created from signup");
-            return res.status(201).json({ message: "User created", token: token }); 
+            return res.status(200).json({ message: "User created", token: token }); 
         } catch (error) {
             console.error("Error creating user:", error);
-            return res.status(500).json({ message: "Error creating user" });
+            return res.status(200).json({ message: "Error creating user" });
         }
     } else {
         console.log("Invalid input from user");
-        return res.status(400).json({ message: "Invalid input from user", errors: parsedData.error });
+        return res.status(200).json({ message: "Invalid input from user", errors: parsedData.error });
     }
 });
 
@@ -90,7 +99,7 @@ app.post("/login", async (req, res) => {
         const { email, password } = parsedData.data;
 
         try {
-            const user = await User.findOne({ email, password });
+            const user = await User.findOne({ email:email,password: password });
 
             if (user) {
                 const token = jwt.sign({ email }, secret, { expiresIn: '1000h' });
@@ -98,15 +107,15 @@ app.post("/login", async (req, res) => {
                 return res.status(200).json({ message: "User logged in", token: token });
             } else {
                 console.log("Invalid email or password in login");
-                return res.status(404).json({ message: "Invalid email or password" });
+                return res.status(200).json({ message: "Invalid email or password" });
             }
         } catch (error) {
             console.error("Error logging in:", error);
-            return res.status(500).json({ message: "Error logging in" });
+            return res.status(200).json({ message: "Error logging in" });
         }
     } else {
         console.log("Invalid input from user");
-        return res.status(400).json({ message: "Invalid input from user", errors: parsedData.error });
+        return res.status(200).json({ message: "Invalid input from user", errors: parsedData.error });
     }
 });
 
@@ -128,6 +137,30 @@ app.get("/transactions",authenticateJwt,async(req,res)=>{
     if(transactions)
     {
         res.status(200).json(transactions);
+    }
+    else{
+        res.status(404).json({message : "User not found"})
+    }
+
+})
+
+app.get("/mytransactions",authenticateJwt,async(req,res)=>{
+    const transactions=await Transactions.find({})
+
+    if(transactions)
+    {
+        const user =await User.findOne({email:req.user.email})
+
+        const arr=[]
+
+        for(let i=0;i<user.transactions.length;i++)
+        {
+            const x=user.transactions[i];
+            const y=await Transactions.findOne({_id : x})
+            arr.push(y)
+        }
+
+        res.status(200).json(arr);
     }
     else{
         res.status(404).json({message : "User not found"})
@@ -196,7 +229,9 @@ app.post("/givemoney", authenticateJwt, async (req, res) => {
         const obj = {
             from: sender._id,
             to: receiver._id,
-            received: parsedData.amount 
+            received: parsedData.amount ,
+            from_name : sender.username,
+            to_name : receiver.username
         };
 
         const transaction = await Transactions.create(obj);
@@ -239,7 +274,9 @@ app.post("/creditmoney",authenticateJwt, async (req, res) => {
         const obj={
             from:foundUser._id,
             to:foundUser._id,
-            received:parsedData.data.amount
+            received:parsedData.data.amount,
+            from_name:foundUser.username,
+            to_name:foundUser.username
         }
         const transaction=await Transactions.create(obj)
         foundUser.transactions.push(transaction)
@@ -283,7 +320,9 @@ app.post("/debitmoney",authenticateJwt, async (req, res) => {
         const obj={
             from:foundUser._id,
             to:foundUser._id,
-            received:parsedData.data.amount
+            received:parsedData.data.amount,
+            from_name:foundUser.username,
+            to_name:foundUser.username
         }
         const transaction=await Transactions.create(obj)
         foundUser.transactions.push(transaction)
@@ -369,8 +408,19 @@ app.get("/friends",authenticateJwt,async(req,res)=>{
         if (!foundUser) {
             return res.status(404).json({ message: "User not found" });
         }
+        const arr=[]
+        for(let i=0;i<foundUser.friends.length;i++)
+        {
+            const x=foundUser.friends[i]
+            const y=await User.findById(x._id)
+            const obj={
+                username : y.username,
+                number :y.number
+            }
+            arr.push(obj)
+        }
 
-        return res.status(200).json({ friends:foundUser.friends });
+        return res.status(200).json({ friends:arr});
     } catch (error) {
         console.error("Error fetching user details:", error);
         return res.status(500).json({ message: "Error fetching user details" });
@@ -416,7 +466,7 @@ app.post("/addfriends", authenticateJwt, async (req, res) => {
     }
 });
 
-app.get("/sentrequest", authenticateJwt, async (req, res) => {
+app.get("/sentRequests", authenticateJwt, async (req, res) => {
     const user = req.user;
 
     try {
@@ -431,7 +481,19 @@ app.get("/sentrequest", authenticateJwt, async (req, res) => {
         }
 
         if (foundUser.requestSent.length > 0) {
-            return res.status(200).json({ requestSent: foundUser.requestSent });
+            const arr=[]
+            for(let i=0;i<foundUser.requestSent.length;i++)
+            {
+                const x=foundUser.requestSent[i]
+                const y=await Request.findById(x._id)
+                const obj={
+                    from_name:y.from_name,
+                    to_name:y.to_name,
+                    amount:y.amount
+                }
+                arr.push(obj)
+            }
+            return res.status(200).json({ requestSent: arr });
         } else {
             return res.status(401).json({ message: "No request sent" });
         }
@@ -456,7 +518,20 @@ app.get("/requestReceived", authenticateJwt, async (req, res) => {
         }
 
         if (foundUser.requestReceived.length > 0) {
-            return res.status(200).json({ requestReceived: foundUser.requestReceived });
+
+            const arr=[]
+            for(let i=0;i<foundUser.requestReceived.length;i++)
+            {
+                const x=foundUser.requestReceived[i]
+                const y=await Request.findById(x._id)
+                const obj={
+                    from_name:y.from_name,
+                    to_name:y.to_name,
+                    amount:y.amount
+                }
+                arr.push(obj)
+            }
+            return res.status(200).json({ requestReceived: arr });
         } else {
             return res.status(401).json({ message: "No requests received" });
         }
@@ -494,7 +569,8 @@ app.post("/sendRequest", authenticateJwt, async (req, res) => {
             from: reqSender._id,
             to: reqReceiver._id,
             active: true,
-            sentByMe: true,
+            from_name:reqSender.username,
+            to_name:reqReceiver.username,
             amount: data.amount
         };
 
@@ -556,6 +632,8 @@ app.post("/fulfillRequest", authenticateJwt, async (req, res) => {
             to: to._id,
             received: amount,
             amount: amount,
+            from_name:from.username,
+            to_name:to.username
         });
 
         await transaction.save();
