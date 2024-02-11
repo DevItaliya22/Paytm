@@ -1,9 +1,14 @@
 import React from 'react'
 import Header from './Header'
+import axios from 'axios'
 
 function CreditMoney() {
+
   return (
-    <div>CreditMoney</div>
+    <div>
+      <Header></Header>
+      
+    </div>
   )
 }
 
