@@ -8,6 +8,7 @@ import MyTransactions from './components/MyTransactions';
 import Requests from './components/Requests';
 import Transactions from './components/Transactions';
 import Users from './components/Users';
+import Friends from './components/Friends';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/credit" element={<CreditMoney />} />
         <Route path="/debit" element={<DebitMoney />} />
+        <Route path="/friends" element={<Friends />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/mytransactions" element={<MyTransactions />} />
         <Route path="/requests" element={<Requests />} />

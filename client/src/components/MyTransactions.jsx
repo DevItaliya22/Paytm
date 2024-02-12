@@ -26,7 +26,7 @@ function MyTransactions() {
 
     getData();
   }, []);
-console.log(transactions);
+
   return (
     <div>
       <Header />
@@ -39,8 +39,8 @@ console.log(transactions);
               {transactions.map(transaction => (
                 <div key={transaction._id} style={{ width: "97%", height: "140px", border: "2px solid white", backgroundColor: "#19376d", display: "flex", flexDirection: "column", color: "#a5d7e8" ,
                 padding:"20px"}}>
-                  <p>From: {transaction.from}</p>
-                  <p>To: {transaction.to}</p>
+                  <p>From: {transaction.from_name}</p>
+                  <p>To: {transaction.to_name}</p>
                   <p>Received: {transaction.received}</p>
                 </div>
               ))}

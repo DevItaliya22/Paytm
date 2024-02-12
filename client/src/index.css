@@ -1,3 +1,9 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
+
+
+.header-button-logout:hover{
+    color: red !important;
+}

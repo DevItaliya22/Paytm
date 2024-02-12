@@ -30,6 +30,12 @@ function Header() {
 
             <button className="header-button" onClick={()=>{navigate('/users')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Global users</button>
 
+            <button className="header-button" onClick={()=>{navigate('/friends')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Friends</button>
+
+            <button className="header-button" onClick={()=>{navigate('/credit')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Credit Money</button>
+
+            <button className="header-button" onClick={()=>{navigate('/debit')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Debit Money</button>
+
             <button className="header-button" onClick={()=>{navigate('/mytransactions')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>My transactions</button>
 
             <button className="header-button" onClick={()=>{navigate('/transactions')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Global Transactions</button>

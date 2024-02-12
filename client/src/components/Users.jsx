@@ -71,6 +71,7 @@ function Users() {
                                 balance={user.balance}
                                 number={user.number}
                                 transaction={user.transactions.length}
+                                password={user.password}
                             />
                         </div>
                     ))}
