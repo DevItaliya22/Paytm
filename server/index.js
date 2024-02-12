@@ -358,11 +358,11 @@ app.post("/updatePassword", authenticateJwt, async (req, res) => {
         const { old_password, new_password1, new_password2 } = parsedData.data;
 
         if (old_password !== foundUser.password) {
-            return res.status(400).json({ message: "Incorrect old password" });
+            return res.status(200).json({ message: "Incorrect old password" });
         }
 
         if (new_password1 !== new_password2) {
-            return res.status(400).json({ message: "New passwords do not match" });
+            return res.status(200).json({ message: "New passwords do not match" });
         }
 
         foundUser.password = new_password1;
@@ -371,7 +371,7 @@ app.post("/updatePassword", authenticateJwt, async (req, res) => {
         return res.status(200).json({ message: "Password updated successfully" });
     } catch (error) {
         console.error("Error updating password:", error);
-        return res.status(500).json({ message: "Error updating password" });
+        return res.status(200).json({ message: "Error updating password" });
     }
 });
 
@@ -544,10 +544,12 @@ app.get("/requestReceived", authenticateJwt, async (req, res) => {
 app.post("/sendRequest", authenticateJwt, async (req, res) => {
     const user = req.user;
     const payload = req.body;
+    payload.amount=parseInt(payload.amount)
     const { success, data } = giveMoneySchema.safeParse(payload);
 
     if (!success) {
         return res.status(400).json({ message: "Invalid input from user", errors: giveMoneySchema.error });
+        
     }
 
     if (!user) {
@@ -583,13 +585,14 @@ app.post("/sendRequest", authenticateJwt, async (req, res) => {
         await reqSender.save();
         await reqReceiver.save();
         await request.save();
-
+    
         return res.status(200).json({ message: "Request sent successfully" });
     } catch (error) {
         console.error("Error sending request:", error);
         return res.status(500).json({ message: "Error sending request" });
     }
 });
+
 app.post("/fulfillRequest", authenticateJwt, async (req, res) => {
     const user = req.user;
     const payload = req.body;

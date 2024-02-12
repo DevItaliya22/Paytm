@@ -9,6 +9,8 @@ import Requests from './components/Requests';
 import Transactions from './components/Transactions';
 import Users from './components/Users';
 import Friends from './components/Friends';
+import ChangePassword from './components/ChangePassword';
+import SendRequest from './components/SendRequest';
 
 
 function App() {
@@ -23,6 +25,8 @@ function App() {
         <Route path="/credit" element={<CreditMoney />} />
         <Route path="/debit" element={<DebitMoney />} />
         <Route path="/friends" element={<Friends />} />
+        <Route path="/sendRequest" element={<SendRequest />} />
+        <Route path="/changePassword" element={<ChangePassword />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/mytransactions" element={<MyTransactions />} />
         <Route path="/requests" element={<Requests />} />

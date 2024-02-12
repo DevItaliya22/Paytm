@@ -30,6 +30,12 @@ function Header() {
 
             <button className="header-button" onClick={()=>{navigate('/users')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Global users</button>
 
+            <button className="header-button" onClick={()=>{navigate('/sendRequest')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Send Request</button>
+
+            
+            
+            <button className="header-button" onClick={()=>{navigate('/changePassword')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Change Password</button>
+
             <button className="header-button" onClick={()=>{navigate('/friends')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Friends</button>
 
             <button className="header-button" onClick={()=>{navigate('/credit')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Credit Money</button>

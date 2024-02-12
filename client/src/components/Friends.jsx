@@ -31,14 +31,14 @@ function Friends() {
     }
 
     return (
-        <div>
+        <div style={{ backgroundColor: '#0b2447' }}>
             <Header />
-            <h1 style={{ textAlign: 'center',backgroundColor:"#0b2447",margin:"0px",color:"white" }}>Friends</h1>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
+            <h1 style={{ textAlign: 'center', margin: '0', padding: '20px 0', color: 'white' }}>Friends</h1>
+            <ul style={{ listStyleType: 'none', padding: "10px" }}>
                 {friends.map((friend, index) => (
-                    <li key={index} style={{ backgroundColor: '#f0f0f0', border: '1px solid #ccc', borderRadius: '5px', marginBottom: '10px', padding: '10px' }}>
+                    <li key={index} style={{ backgroundColor:"#0b2447", border: '1px solid #ccc', borderRadius: '5px', marginBottom: '10px', padding: '10px' ,color:"white"}}>
                         <p style={{ margin: 0, fontWeight: 'bold' }}>Username: {friend.username}</p>
-                        {friend.number && <p style={{ margin: 0, color: '#555' }}>Number: {friend.number}</p>}
+                        {friend.number && <p style={{ margin: 0, color: 'white' }}>Number: {friend.number}</p>}
                     </li>
                 ))}
             </ul>

@@ -90,7 +90,8 @@ function DebitMoney() {
     <div>
       <Header />
       <div className="main-container" style={{backgroundColor:"#19376d",width:"100%",height:"615px"}}>
-        <div style={{backgroundColor:'pink',border:'2px solid black',margin:'0 auto',width:'400px',padding:'30px'}}>
+        <div style={{backgroundColor:'#19376d',margin:'0 auto',width:'400px',padding:'30px'}}>
+        <h1 style={{color:"white"}}>Debit Amount</h1>
           <input
             type='password'
             placeholder="Password"
