@@ -1,5 +1,5 @@
-// ChangePassword.js
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Header from './Header';
@@ -8,7 +8,7 @@ function ChangePassword() {
     const [password1, setPassword1] = useState('');
     const [password2, setPassword2] = useState('');
     const [password3, setPassword3] = useState('');
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn ,check} = useAuth();
 
     const updatePassword = async () => {
         const obj = {
@@ -29,7 +29,10 @@ function ChangePassword() {
             console.error("Error updating password:", error);
         }
     };
-
+    useEffect(()=>{
+        check()
+    },[])
+    
     return (
         <div className="change-password-container">
             <Header />

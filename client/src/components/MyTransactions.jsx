@@ -5,8 +5,11 @@ import { useAuth } from '../context/AuthContext';
 
 function MyTransactions() {
   const [transactions, setTransactions] = useState([]);
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn,check } = useAuth();
 
+  useEffect(()=>{
+    check()
+},[])
   useEffect(() => {
     const getData = async () => {
       const token = localStorage.getItem('token');

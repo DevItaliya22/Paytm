@@ -2,18 +2,19 @@ import React from 'react';
 import axios from 'axios';
 
 function Card({ username, email, balance, number, transaction, password }) {
+    
     const handleAddFriend = async () => {
         try {
-            const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
+            const token = localStorage.getItem('token');
             const response = await axios.post("http://localhost:3000/addfriends",  {email:email} , {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            console.log(response.data.message); // Assuming the response contains a message indicating success or failure
+            console.log(response.data.message); 
         } catch (error) {
             console.error("Error adding friend:", error);
-            // Handle error
+            
         }
     };
 

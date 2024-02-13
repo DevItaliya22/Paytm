@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const login = () => {
     setIsLoggedIn(true);
   };
+  
   const check=()=>{
     if(localStorage.getItem('token'))setIsLoggedIn(true);
     else setIsLoggedIn(false)

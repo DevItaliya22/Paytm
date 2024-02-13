@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
 function DebitMoney() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn,check } = useAuth();
   const [password, setPassword] = useState('');
   const [realPassword, setRealPassword] = useState('');
   const [amount, setAmount] = useState(0);
@@ -12,6 +12,9 @@ function DebitMoney() {
   const [balance, setBalance] = useState(0);
   const [submittedPassword, setSubmittedPassword] = useState(false);
 
+  useEffect(()=>{
+    check()
+},[])
   useEffect(() => {
     if (!isLoggedIn) return;
 

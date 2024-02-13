@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Header from './Header';
 
 function Transactions() {
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn,check } = useAuth();
     const [error, setError] = useState('');
     const [transactions, setTransactions] = useState([]);
     const [password, setPassword] = useState('');
@@ -32,7 +32,9 @@ function Transactions() {
         };
         getTransactions();
     }, []);
-
+    useEffect(()=>{
+        check()
+    },[])
     const handleSubmit = () => {
         if (password === "123") {
             setIsViewable(true);

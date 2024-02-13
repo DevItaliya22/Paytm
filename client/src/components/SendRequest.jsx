@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Header from './Header';
@@ -7,8 +7,11 @@ import Header from './Header';
 function SendRequest() {
     const [email, setEmail] = useState('');
     const [amount, setAmount] = useState('');
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn,check } = useAuth();
 
+    useEffect(()=>{
+      check()
+  },[])
     const sendRequest = async () => {
         const obj = {
             email: email,

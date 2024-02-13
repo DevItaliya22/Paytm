@@ -42,9 +42,8 @@ function Signup() {
         }
     }
     useEffect(()=>{
-        check();
-    },)
-
+        check()
+    },[])
     const handleShowPassword = () => {
         setShowPassword(!showPassword)
     }

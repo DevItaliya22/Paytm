@@ -11,10 +11,6 @@ const userSchemaLogin = zod.object({
     password: zod.string().min(4).max(56),
 });
 
-const transactionsSchema = zod.object({
-    received: zod.number().positive()
-});
-
 const giveMoneySchema=zod.object({
     email:zod.string().email(),
     amount:zod.number().positive()
@@ -38,7 +34,6 @@ const reqMoneySchema=zod.object({
 
 export {
     userSchemaLogin,
-    transactionsSchema,
     userSchemaSignUp,
     giveMoneySchema,
     creditDebitSchema,

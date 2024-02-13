@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {useEffect }from 'react';
 import Header from './Header';
+import { useAuth } from '../context/AuthContext';
 
 function Home() {
+    const{isLoggedIn,check}=useAuth();
+    useEffect(()=>{
+        check()
+    },[])
     return (
         <div>
             <Header />

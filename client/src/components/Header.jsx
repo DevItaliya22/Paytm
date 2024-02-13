@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect }from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,6 +6,9 @@ function Header() {
   const { isLoggedIn,logout ,check} = useAuth();
   const navigate = useNavigate();
 
+  useEffect(()=>{
+    check()
+},[])
 
   const handleSignUp = () => {
     navigate("/signup");
@@ -32,6 +35,7 @@ function Header() {
 
             <button className="header-button" onClick={()=>{navigate('/sendRequest')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Send Request</button>
 
+            <button className="header-button" onClick={()=>{navigate('/requests')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Recieved Request</button>
             
             
             <button className="header-button" onClick={()=>{navigate('/changePassword')}} style={{ color: "#A5D7E8", width: "100px", height: "40px", backgroundColor: "#0B2447", borderRadius: "20px", border: "0px black solid", marginRight: "30px", cursor: "pointer", transition: "background-color 0.3s ease", fontWeight: "400" }}>Change Password</button>

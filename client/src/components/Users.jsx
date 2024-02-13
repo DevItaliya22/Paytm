@@ -5,13 +5,15 @@ import Card from './Cards';
 import Header from './Header';
 
 function Users() {
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn ,check} = useAuth();
     const [error, setError] = useState('');
     const [users, setUsers] = useState([]);
     const [password,setPassword]=useState('');
     const [isViewable,setIsViewable]=useState(false);
     
-
+    useEffect(()=>{
+        check()
+    },[])
 
     useEffect(() => {
         const getUser = async () => {
@@ -78,7 +80,8 @@ function Users() {
                 </div>
             ) : (
                 <div>
-                    <h1 style={{color:"#a5d7e8",height:"1000px"}}>Please log in to view users</h1>
+                    <h1 style={{color:"#a5d7e8",height:"100px"}}>Please log in to view users</h1>
+                    <div style={{backgroundColor:"#0b2447",height:"700px"}}>
                     <input
                         type='text'
                         placeholder="Password"
@@ -96,11 +99,13 @@ function Users() {
                             padding: "10px", 
                             margin: "30px auto", 
                             border: "none", 
-                            backgroundColor: '#0b2447', 
+                            backgroundColor: '#19376d', 
                             color: "#fff", 
                             transition: "0.5s ease-in-out" 
                         }}
                     />
+                    </div>
+                    
                 </div>
             )}
         </div>

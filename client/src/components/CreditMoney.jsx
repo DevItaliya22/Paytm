@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
 function CreditMoney() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn,check } = useAuth();
   const [password, setPassword] = useState('');
   const [realPassword, setRealPassword] = useState('');
   const [amount, setAmount] = useState(0);
@@ -53,6 +53,9 @@ function CreditMoney() {
 
     getBalance();
   }, );
+  useEffect(()=>{
+    check()
+},[])
 
   const handlePasswordSubmit = () => {
     if (password === realPassword) {

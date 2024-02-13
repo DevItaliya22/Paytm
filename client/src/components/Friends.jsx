@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from './Header';
+import { useAuth } from '../context/AuthContext';
 
 function Friends() {
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true);
+    const {isLoggedIn,check}=useAuth()
+
+    useEffect(()=>{
+        check()
+    },[])
 
     useEffect(() => {
         const fetchFriends = async () => {

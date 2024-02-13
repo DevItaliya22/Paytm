@@ -41,8 +41,8 @@ function Login() {
         }
     };
     useEffect(()=>{
-        check();
-    },)
+        check()
+    },[])
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
