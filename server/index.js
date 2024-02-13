@@ -640,8 +640,8 @@ app.post("/fulfillRequest", authenticateJwt, async (req, res) => {
 
     await transaction.save();
 
-    from.balance -= amount;
-    to.balance += amount;
+    from.balance += amount;
+    to.balance -= amount;
 
     await from.save();
     await to.save();
